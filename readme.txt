@@ -1,9 +1,9 @@
 === Redirect Manager ===
-Contributors: Denis-de-Bernardy
+Contributors: Denis-de-Bernardy & Mike Koepke
 Donate link: http://www.semiologic.com/partners/
 Tags: semiologic
-Requires at least: 2.8
-Tested up to: 3.2.1
+Requires at least: 3.1
+Tested up to: 3.5
 Stable tag: trunk
 
 Lets you redirect your posts and pages to arbitrary urls.
@@ -22,10 +22,14 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 == Installation ==
 
 1. Upload the plugin folder to the `/wp-content/plugins/` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress
+2. Activate the plugin through the 'Plugins' menu in WordPress
 
 
 == Change Log ==
+
+= 1.1.2 =
+
+- WP 3.5 compat
 
 = 1.1.1 =
 
