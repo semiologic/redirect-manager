@@ -6,14 +6,21 @@
  **/
 
 class redirect_manager_admin {
-	/**
+    /**
+     * redirect_manager_admin()
+     */
+    function redirect_manager_admin () {
+        add_action('save_post', array($this, 'save_entry'));
+    } #redirect_manager_admin
+
+    /**
 	 * edit_entry()
 	 *
 	 * @param object $post
 	 * @return void
 	 **/
 	
-	function edit_entry($post) {
+	static function edit_entry($post) {
 		if ( $post->ID > 0 )
 			$value = get_post_meta($post->ID, '_redirect_url', true);
 		else
@@ -57,5 +64,6 @@ class redirect_manager_admin {
 	} # save_entry()
 } # redirect_manager_admin
 
-add_action('save_post', array('redirect_manager_admin', 'save_entry'));
+$redirect_manager_admin = new redirect_manager_admin();
+
 ?>
