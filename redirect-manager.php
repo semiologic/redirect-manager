@@ -68,30 +68,15 @@ class redirect_manager {
 		if ( is_feed() || !is_singular() )
 		 	return;
 
-		$post_id = url_to_postid( $_SERVER['SCRIPT_URI'] );
-		if ( $post_id ) {
-			if ( $location = get_post_meta($post_id, '_redirect_url', true) ) {
+		global $wp_query;
+		$post_id = $wp_query->get_queried_object_id();
 
-				if ( false !== stripos( trailingslashit( $location ), home_url( '/' ) ) ) {
-					// Chop off http://domain.com/[path]
-					$location = str_replace( home_url(), '', $location );
-				} else {
-					// Chop off /path/to/blog
-					$home_path = parse_url( home_url( '/' ) );
-					$home_path = isset( $home_path['path'] ) ? $home_path['path'] : '' ;
-					$location = preg_replace( sprintf( '#^%s#', preg_quote( $home_path ) ), '', trailingslashit( $location ) );
-				}
-
-				if ( stripos( $_SERVER['REQUEST_URI'], $location ) === false ) {
-					if ( !current_user_can('edit_post', $post_id) ) {
-						if ( $location[0] == '/' )
-							$location = substr( $location, 1 );
-						if ( $this->wp_redirect( home_url( '/' ) . $location, 301) )
-							exit();
-					} else {
-						add_filter('the_content', array($this, 'display'));
-					}
-				}
+		if ( $location = get_post_meta($post_id, '_redirect_url', true) ) {
+			if ( !current_user_can('edit_post', $post_id) ) {
+				if ( $this->wp_redirect($location, 301) )
+					exit();
+			} else {
+				add_filter('the_content', array($this, 'display'));
 			}
 		}
 	} # redirect()
