@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy & Mike_Koepke
 Donate link: http://www.semiologic.com/partners/
 Tags: semiologic
 Requires at least: 3.1
-Tested up to: 3.6
+Tested up to: 3.7
 Stable tag: trunk
 
 Lets you redirect your posts and pages to arbitrary urls.
@@ -26,6 +26,11 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 
 == Change Log ==
+
+= 1.3 =
+
+- Fixed problem with modern browsers (especially Firefox) with caching of 301 redirects and infinite redirect loops.
+- WP 3.7 compat
 
 = 1.2 =
 

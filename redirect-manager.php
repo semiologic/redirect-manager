@@ -3,20 +3,20 @@
 Plugin Name: Redirect Manager
 Plugin URI: http://www.semiologic.com/software/redirect-manager/
 Description: Lets you manage redirects on your site without messing around with .htaccess files.
-Version: 1.2
+Version: 1.3
 Author: Denis de Bernardy & Mike Koepke
-Author URI: http://www.getsemiologic.com
+Author URI: http://www.semiologic.com
 Text Domain: redirect-manager
 Domain Path: /lang
+License: Dual licensed under the MIT and GPL licenses
 */
 
 /*
 Terms of use
 ------------
 
-This software is copyright Mesoconcepts (http://www.mesoconcepts.com), and is distributed under the terms of the Mesoconcepts license. In a nutshell, you may freely use it for any purpose, but may not redistribute it without written permission.
+This software is copyright Denis de Bernardy & Mike Koepke, and is distributed under the terms of the MIT and GPLv2 licenses.
 
-http://www.mesoconcepts.com/license/
 **/
 
 
@@ -33,9 +33,14 @@ class redirect_manager {
     /**
      * redirect_manager()
      */
-    function redirect_manager() {
-        add_action('admin_menu', array($this, 'meta_boxes'));
-        add_action('template_redirect', array($this, 'redirect'), -1000000);
+    public function __construct() {
+	    if ( !is_admin() ) {
+		   add_action('template_redirect', array($this, 'redirect'), -1000000);
+	    }
+	    else {
+            add_action('admin_menu', array($this, 'meta_boxes'));
+	    }
+
     } #redirect_manager()
 
     /**
@@ -43,64 +48,107 @@ class redirect_manager {
 	 *
 	 * @return void
 	 **/
-	
+
 	function meta_boxes() {
 		if ( current_user_can('edit_posts') )
 			add_meta_box('redirect_manager', __('Redirect', 'redirect-manager'), array('redirect_manager_admin', 'edit_entry'), 'post');
-		
+
 		if ( current_user_can('edit_pages') )
 			add_meta_box('redirect_manager', __('Redirect', 'redirect-manager'), array('redirect_manager_admin', 'edit_entry'), 'page');
 	} # meta_boxes()
-	
-	
+
+
 	/**
 	 * redirect()
 	 *
 	 * @return void
 	 **/
-	
+
 	function redirect() {
 		if ( is_feed() || !is_singular() )
 		 	return;
-		
-		global $wp_query;
-		$post_id = $wp_query->get_queried_object_id();
-		
-		if ( $location = get_post_meta($post_id, '_redirect_url', true) ) {
-			if ( !current_user_can('edit_post', $post_id) ) {
-				wp_redirect($location, 301);
-				die;
-			} else {
-				add_filter('the_content', array($this, 'display'));
+
+		$post_id = url_to_postid( $_SERVER['SCRIPT_URI'] );
+		if ( $post_id ) {
+			if ( $location = get_post_meta($post_id, '_redirect_url', true) ) {
+
+				if ( false !== stripos( trailingslashit( $location ), home_url( '/' ) ) ) {
+					// Chop off http://domain.com/[path]
+					$location = str_replace( home_url(), '', $location );
+				} else {
+					// Chop off /path/to/blog
+					$home_path = parse_url( home_url( '/' ) );
+					$home_path = isset( $home_path['path'] ) ? $home_path['path'] : '' ;
+					$location = preg_replace( sprintf( '#^%s#', preg_quote( $home_path ) ), '', trailingslashit( $location ) );
+				}
+
+				if ( stripos( $_SERVER['REQUEST_URI'], $location ) === false ) {
+					if ( !current_user_can('edit_post', $post_id) ) {
+						if ( $location[0] == '/' )
+							$location = substr( $location, 1 );
+						if ( $this->wp_redirect( home_url( '/' ) . $location, 301) )
+							exit();
+					} else {
+						add_filter('the_content', array($this, 'display'));
+					}
+				}
 			}
 		}
 	} # redirect()
-	
-	
+
+	/**
+	 * Redirects to another page.
+	 *
+	 * @param string $location The path to redirect to.
+	 * @param int $status Status code to use.
+	 * @return bool False if $location is not provided, true otherwise.
+	 */
+	function wp_redirect($location, $status = 302) {
+		global $is_IIS;
+
+		$location = apply_filters( 'wp_redirect', $location, $status );
+
+		$status = apply_filters( 'wp_redirect_status', $status, $location );
+
+		if ( ! $location )
+			return false;
+
+		$location = wp_sanitize_redirect($location);
+
+		if ( !$is_IIS && php_sapi_name() != 'cgi-fcgi' )
+			status_header($status); // This causes problems on IIS and some FastCGI setups
+
+		header("Cache-Control: no-store, no-cache, must-revalidate");
+		header("Location: $location", true, $status);
+
+		return true;
+	}
+
 	/**
 	 * display()
 	 *
 	 * @param string $content the entry's content
 	 * @return string $content
 	 **/
-	
+
 	function display($content) {
 		if ( is_feed() || !is_singular() )
 			return $content;
-		
+
 		global $wp_the_query;
 		$post_id = $wp_the_query->get_queried_object_id();
 		$location = get_post_meta($post_id, '_redirect_url', true);
-		
+
 		if ( $location ) {
 			$location = esc_url($location);
 			$caption = __('This page is redirecting visitors to <a href="%1$s">%2$s</a>. You\'re not being redirected because you can edit this entry.', 'redirect-manager');
 			$content = '<p>' . sprintf($caption, $location, $location) . '</p>';
 		}
-		
+
 		return $content;
 	} # display()
 } # redirect_manager
+
 
 
 function redirect_manager_admin() {
@@ -111,5 +159,3 @@ foreach ( array('page-new.php', 'page.php', 'post-new.php', 'post.php') as $hook
 	add_action("load-$hook", 'redirect_manager_admin');
 
 $redirect_manager = new redirect_manager();
-
-?>
