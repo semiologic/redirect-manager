@@ -1,9 +1,9 @@
 === Redirect Manager ===
 Contributors: Denis-de-Bernardy & Mike_Koepke
 Donate link: http://www.semiologic.com/partners/
-Tags: semiologic
+Tags: semiologic, redirect, redirect url, 301, 302
 Requires at least: 3.1
-Tested up to: 3.7
+Tested up to: 3.8
 Stable tag: trunk
 
 Lets you redirect your posts and pages to arbitrary urls.
@@ -26,6 +26,10 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 
 == Change Log ==
+
+= 1.3.1 =
+
+- WP 3.8 compat
 
 = 1.3 =
 

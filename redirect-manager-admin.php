@@ -9,7 +9,7 @@ class redirect_manager_admin {
     /**
      * redirect_manager_admin()
      */
-    function redirect_manager_admin () {
+	public function __construct() {
         add_action('save_post', array($this, 'save_entry'));
     } #redirect_manager_admin
 
@@ -48,7 +48,7 @@ class redirect_manager_admin {
 	function save_entry($post_id) {
 		if ( !$_POST || wp_is_post_revision($post_id) || !current_user_can('edit_post', $post_id) )
 			return;
-		
+
 		if ( current_user_can('edit_post', $post_id) ) {
 			$value = $_POST['redirect_manager'];
 			$value = stripslashes($value);
