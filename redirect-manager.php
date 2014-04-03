@@ -3,7 +3,7 @@
 Plugin Name: Redirect Manager
 Plugin URI: http://www.semiologic.com/software/redirect-manager/
 Description: Lets you manage redirects on your site without messing around with .htaccess files.
-Version: 1.3.1
+Version: 1.4 dev
 Author: Denis de Bernardy & Mike Koepke
 Author URI: http://www.semiologic.com
 Text Domain: redirect-manager
@@ -20,8 +20,6 @@ This software is copyright Denis de Bernardy & Mike Koepke, and is distributed u
 **/
 
 
-load_plugin_textdomain('redirect-manager', false, dirname(plugin_basename(__FILE__)) . '/lang');
-
 
 /**
  * redirect_manager
@@ -30,18 +28,101 @@ load_plugin_textdomain('redirect-manager', false, dirname(plugin_basename(__FILE
  **/
 
 class redirect_manager {
-    /**
-     * redirect_manager()
-     */
-    public function __construct() {
-	    if ( !is_admin() ) {
-		   add_action('template_redirect', array($this, 'redirect'), -1000000);
-	    }
-	    else {
-            add_action('admin_menu', array($this, 'meta_boxes'));
-	    }
+	/**
+	 * Plugin instance.
+	 *
+	 * @see get_instance()
+	 * @type object
+	 */
+	protected static $instance = NULL;
 
+	/**
+	 * URL to this plugin's directory.
+	 *
+	 * @type string
+	 */
+	public $plugin_url = '';
+
+	/**
+	 * Path to this plugin's directory.
+	 *
+	 * @type string
+	 */
+	public $plugin_path = '';
+
+	/**
+	 * Access this plugin’s working instance
+	 *
+	 * @wp-hook plugins_loaded
+	 * @return  object of this class
+	 */
+	public static function get_instance()
+	{
+		NULL === self::$instance and self::$instance = new self;
+
+		return self::$instance;
+	}
+
+	/**
+	 * Loads translation file.
+	 *
+	 * Accessible to other classes to load different language files (admin and
+	 * front-end for example).
+	 *
+	 * @wp-hook init
+	 * @param   string $domain
+	 * @return  void
+	 */
+	public function load_language( $domain )
+	{
+		load_plugin_textdomain(
+			$domain,
+			FALSE,
+			$this->plugin_path . 'lang'
+		);
+	}
+
+	/**
+	 * Constructor.
+	 *
+	 *
+	 */
+
+    public function __construct() {
+	    $this->plugin_url    = plugins_url( '/', __FILE__ );
+        $this->plugin_path   = plugin_dir_path( __FILE__ );
+        $this->load_language( 'redirect-manager' );
+
+	    add_action( 'plugins_loaded', array ( $this, 'init' ) );
     } #redirect_manager()
+
+	/**
+	 * init()
+	 *
+	 * @return void
+	 **/
+
+	function init() {
+		// more stuff: register actions and filters
+		if ( !is_admin() ) {
+            add_action('template_redirect', array($this, 'redirect'), -1000000);
+        }
+        else {
+            add_action('admin_menu', array($this, 'meta_boxes'));
+
+	        foreach ( array('page-new.php', 'page.php', 'post-new.php', 'post.php') as $hook )
+	        	add_action("load-$hook", array($this, 'redirect_manager_admin' ));
+        }
+	}
+
+	/**
+	* meta_boxes()
+	*
+	* @return void
+	**/
+	function redirect_manager_admin() {
+ 	    include_once $this->plugin_path . '/redirect-manager-admin.php';
+    }
 
     /**
 	 * meta_boxes()
@@ -134,13 +215,4 @@ class redirect_manager {
 	} # display()
 } # redirect_manager
 
-
-
-function redirect_manager_admin() {
-	include_once dirname(__FILE__) . '/redirect-manager-admin.php';
-}
-
-foreach ( array('page-new.php', 'page.php', 'post-new.php', 'post.php') as $hook )
-	add_action("load-$hook", 'redirect_manager_admin');
-
-$redirect_manager = new redirect_manager();
+$redirect_manager = redirect_manager::get_instance();
