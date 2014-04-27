@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy & Mike_Koepke
 Donate link: http://www.semiologic.com/partners/
 Tags: semiologic, redirect, redirect url, 301, 302
 Requires at least: 3.1
-Tested up to: 3.8
+Tested up to: 3.9
 Stable tag: trunk
 
 Lets you redirect your posts and pages to arbitrary urls.
@@ -30,6 +30,7 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 = 1.4 =
 
 - Code refactoring
+- WP 3.9 compat
 
 = 1.3.1 =
 

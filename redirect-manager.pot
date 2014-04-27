@@ -1,44 +1,55 @@
-# Redirect Manager pot file.
-# Copyright (C) 2009 Mesoconcepts <http://www.mesoconcepts.com>
+# Copyright (C) 2014 Redirect Manager
 # This file is distributed under the same license as the Redirect Manager package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: 1.1\n"
-"Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-09-16 16:46+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Project-Id-Version: Redirect Manager 1.4 dev\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/redirect-manager\n"
+"POT-Creation-Date: 2014-04-27 20:44:36+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2014-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
-"Content-Transfer-Encoding: 8bit\n"
 
-#: redirect-manager-admin.php:29
+#: redirect-manager-admin.php:93
 msgid ""
 "Enter the url to which visitors of this entry should automatically be "
 "redirected."
 msgstr ""
 
+#. #-#-#-#-#  redirect-manager.pot (Redirect Manager 1.4 dev)  #-#-#-#-#
+#. Plugin Name of the plugin/theme
 #: redirect-manager-info.php:2
 msgid "Redirect Manager"
 msgstr ""
 
+#. #-#-#-#-#  redirect-manager.pot (Redirect Manager 1.4 dev)  #-#-#-#-#
+#. Description of the plugin/theme
 #: redirect-manager-info.php:3
 msgid ""
 "Lets you manage redirects on your site without messing around with .htaccess "
 "files."
 msgstr ""
 
-#: redirect-manager.php:41 redirect-manager.php:44
+#: redirect-manager.php:135 redirect-manager.php:138
 msgid "Redirect"
 msgstr ""
 
-#: redirect-manager.php:89
-#, php-format
+#: redirect-manager.php:210
 msgid ""
 "This page is redirecting visitors to <a href=\"%1$s\">%2$s</a>. You're not "
 "being redirected because you can edit this entry."
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "http://www.semiologic.com/software/redirect-manager/"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Denis de Bernardy & Mike Koepke"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://www.semiologic.com"
 msgstr ""
